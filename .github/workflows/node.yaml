@@ -82,6 +82,7 @@ jobs:
 
           - host: ubuntu-latest
             target: 'x86_64-unknown-linux-musl'
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
             build: |
               set -e
               sudo apt-get update
@@ -90,7 +91,7 @@ jobs:
               # Set environment variables for Rust toolchain
               export TARGET_CC=x86_64-unknown-linux-musl-cc
               export CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=x86_64-unknown-linux-musl-gcc
-
+              cd bindings/nodejs
               rustup target add x86_64-unknown-linux-musl
               yarn lerna exec "yarn build --target x86_64-unknown-linux-musl" --concurrency 1 --stream --no-prefix
 
