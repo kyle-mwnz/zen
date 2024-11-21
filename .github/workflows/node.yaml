@@ -84,6 +84,8 @@ jobs:
                target: 'x86_64-unknown-linux-musl'
                build: |
                  set -e
+                 sudo apt-get update
+                 sudo apt-get install musl-tools
                  rustup target add x86_64-unknown-linux-musl
                  yarn lerna exec "yarn build --target x86_64-unknown-linux-musl" --concurrency 1 --stream --no-prefix
 
