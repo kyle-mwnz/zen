@@ -91,14 +91,13 @@ jobs:
               strip ./*.node
 
           - host: ubuntu-latest
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
             target: 'aarch64-unknown-linux-musl'
-            build: |
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+            build: >-
               set -e
-              cd bindings/nodejs
               rustup target add aarch64-unknown-linux-musl
-              yarn lerna exec "yarn build --target aarch64-unknown-linux-musl" --concurrency 1 --stream --no-prefix
-              aarch64-unknown-linux-gnu-strip *.node
+              yarn build --target aarch64-unknown-linux-musl
+              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node
 
     name: stable - ${{ matrix.settings.target }} - node@18
     runs-on: ${{ matrix.settings.host }}
