@@ -96,6 +96,15 @@ jobs:
             build: |
               set -e
               cd bindings/nodejs
+              # # Install musl-cross
+              # wget https://musl.cc/aarch64-linux-musl-cross.tgz
+              # tar -xvf aarch64-linux-musl-cross.tgz
+              # export PATH=$PWD/aarch64-linux-musl-cross/bin:$PATH
+
+              # Set environment variables for the Rust toolchain
+              export CC_aarch64_unknown_linux_musl=aarch64-linux-musl-gcc
+              export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-musl-gcc
+
               rustup target add aarch64-unknown-linux-musl
               yarn lerna exec "yarn build --target aarch64-unknown-linux-musl" --concurrency 1 --stream --no-prefix
               /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node
