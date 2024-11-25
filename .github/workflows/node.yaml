@@ -285,7 +285,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
+      - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
       - name: Setup node
         uses: actions/setup-node@v3
         with:
