@@ -95,8 +95,9 @@ jobs:
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
             build: |
               set -e
+              cd bindings/nodejs
               rustup target add aarch64-unknown-linux-musl
-              yarn build --target aarch64-unknown-linux-musl
+              yarn lerna exec "yarn build --target aarch64-unknown-linux-musl" --concurrency 1 --stream --no-prefix
               /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node
 
     name: stable - ${{ matrix.settings.target }} - node@18
