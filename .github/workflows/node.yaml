@@ -285,7 +285,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
       - name: Setup node
         uses: actions/setup-node@v3
         with:
@@ -299,6 +298,12 @@ jobs:
           yarn config set supportedArchitectures.cpu "arm64"
           yarn config set supportedArchitectures.libc "musl"
           yarn install --immutable --mode=skip-build
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+      - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
       - name: Download artifacts
         uses: actions/download-artifact@v3
@@ -317,8 +322,8 @@ jobs:
       - name: Test bindings
         uses: addnab/docker-run-action@v3
         with:
-          image: ghcr.io/napi-rs/napi-rs/nodejs:aarch64-${{ matrix.node }}
-          options: -v ${{ github.workspace }}:/workspace
+          options: --platform linux/arm64 -v ${{ github.workspace }}:/workspace
+          image: node:${{ matrix.node }}-alpine
           run: |
             cd workspace/bindings/nodejs
             yarn install
