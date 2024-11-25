@@ -8,9 +8,6 @@ publish = false
 [lib]
 crate-type = ["cdylib"]
 
-[target.x86_64-unknown-linux-musl]
-linker = "x86_64-linux-musl-gcc"
-
 [dependencies]
 napi = { version = "2.16", features = ["serde-json", "error_anyhow", "tokio_rt"] }
 napi-derive = "2.16"
