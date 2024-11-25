@@ -96,8 +96,8 @@ jobs:
             build: |
               set -e
               cd bindings/nodejs
-              sudo apt-get update && sudo apt-get install -y musl-tools gcc-aarch64-linux-musl
-              export CC_aarch64_unknown_linux_musl=aarch64-linux-musl-gcc
+              export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-gnu-gcc
+              export CC=aarch64-linux-gnu-gcc
               rustup target add aarch64-unknown-linux-musl
               yarn lerna exec "yarn build --target aarch64-unknown-linux-musl" --concurrency 1 --stream --no-prefix
               strip ./*.node
