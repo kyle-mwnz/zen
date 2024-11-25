@@ -93,7 +93,7 @@ jobs:
           - host: ubuntu-latest
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
             target: 'aarch64-unknown-linux-musl'
-            build: >-
+            build: |
               set -e
               cd bindings/nodejs
               rustup target add aarch64-unknown-linux-musl
