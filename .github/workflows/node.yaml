@@ -96,11 +96,6 @@ jobs:
             build: |
               set -e
               cd bindings/nodejs
-              # # Install musl-cross
-              # wget https://musl.cc/aarch64-linux-musl-cross.tgz
-              # tar -xvf aarch64-linux-musl-cross.tgz
-              # export PATH=$PWD/aarch64-linux-musl-cross/bin:$PATH
-
               # Set environment variables for the Rust toolchain
               export CC_aarch64_unknown_linux_musl=aarch64-linux-musl-gcc
               export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-musl-gcc
@@ -271,6 +266,58 @@ jobs:
           options: -v ${{ github.workspace }}:/workspace
           run: |
             cd workspace/bindings/nodejs
+            yarn install
+            yarn link
+            yarn test
+
+  test-linux-aarch64-musl-binding:
+    name: Test bindings on Linux-aarch64-musl - node@${{ matrix.node }}
+    needs:
+      - build
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [ '16', '18', '20' ]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+          check-latest: true
+          cache: yarn
+          cache-dependency-path: 'bindings/nodejs/yarn.lock'
+
+      - name: Install dependencies
+        run: yarn install --immutable --mode=skip-build
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: bindings-aarch64-unknown-linux-musl
+          path: artifacts
+
+      - name: Move artifacts
+        run: yarn artifacts
+        shell: bash
+
+      - name: List folder
+        run: ls ./
+        shell: bash
+
+      - name: Test bindings
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ghcr.io/napi-rs/napi-rs/nodejs:aarch64-${{ matrix.node }}
+          options: -v ${{ github.workspace }}:/workspace
+          run: |
+            cd bindings/nodejs
             yarn install
             yarn link
             yarn test
