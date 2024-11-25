@@ -317,7 +317,7 @@ jobs:
           image: ghcr.io/napi-rs/napi-rs/nodejs:aarch64-${{ matrix.node }}
           options: -v ${{ github.workspace }}:/workspace
           run: |
-            cd bindings/nodejs
+            cd workspace/bindings/nodejs
             yarn install
             yarn link
             yarn test
